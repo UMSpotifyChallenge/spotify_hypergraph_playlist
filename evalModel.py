@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
 CREATED:2012-03-27 20:48:48 by Brian McFee <bmcfee@cs.ucsd.edu>
- 
+
 Model evaluator
 
 Usage:
@@ -88,7 +88,7 @@ def processArguments():
     return vars(parser.parse_args(sys.argv[1:]))
 
 def loadModel(params):
-    with open(params['model_in'], 'r') as f:
+    with open(params['model_in'], 'r') as f: # orig: with open(params['model_in'][0], 'r') as f:
         G = pickle.load(f)['G']
         pass
     return G
@@ -113,7 +113,7 @@ def evaluateModel(params):
     scores  = {}
 
     # 1: load the model
-    print ('Loading model...')
+    print('Loading model...')
     G = loadModel(params)
 
     # Reset edge weights
@@ -121,37 +121,43 @@ def evaluateModel(params):
 
     for (P, name) in getFiles(params, 'train'):
         nFolds  = len(P)
-        print ('Training on %20s... ' % name)
-        weights[name]   = [None] * nFolds
+        print('Training on %20s... ' % name)
+        weights[name]   = [None] * nFolds # add name to weights
 
-        #for fold in xrange(nFolds):
-        if params['weighted']:
-            G.learn(P, 
-                MARKOV  =   params['markov'], 
-                a       =   params['a'], 
-                lam     =   params['lam'],
-                DEBUG   =   params['DEBUG'],
-                m       =   params['m'],
-                val     =   params['val'])
-            pass
-        weights[name]     = G.getWeights()
-        scores[name]            = {}
-        print (' done.')
+        ## a P[fold] here should be at leasat 2 dimensional
+        for fold in xrange(nFolds): # what does a 'fold' represent?
+            if params['weighted']:
+                G.learn(P[fold],
+                    MARKOV  =   params['markov'],
+                    a       =   params['a'],
+                    lam     =   params['lam'],
+                    DEBUG   =   params['DEBUG'],
+                    m       =   params['m'],
+                    val     =   params['val'])
+                pass
+            weights[name][fold]     = G.getWeights()
+            scores[name]            = {}
+        print(' done.')
         pass
 
     for (P, name) in getFiles(params, 'test'):
+        #print(P)
         nFolds  = len(P)
         K = list(set(['ALL', name]))
         K.sort()
         for trainDist in K:
-            print ('Testing G(%20s) on %20s\t' % (trainDist, name))
-            s = numpy.zeros(nFolds)
+            if trainDist == 'ALL':
+                continue
+            print('Testing G(%20s) on %20s\t' % (trainDist, name))
+            s = numpy.zeros(nFolds) # vec of avg liklihood
             for fold in xrange(nFolds):
-                G.setWeights(weights[trainDist][fold])
+                G.setWeights(weights[name][fold])
                 s[fold] = G.avglikelihood(P[fold], MARKOV=params['markov'])
                 pass
             scores[trainDist][name] = s
-            print ('LL: %.4f +- %.4f' % (numpy.mean(s), numpy.std(s)))
+            for i in s:
+                print("avg LL at this fold: ");print(i)
+            print('LL: %.4f +- %.4f' % (numpy.mean(s), numpy.std(s)))
             pass
         pass
 

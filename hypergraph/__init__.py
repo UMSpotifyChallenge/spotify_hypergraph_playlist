@@ -15,11 +15,11 @@ import re
 class Hypergraph(object):
 
     def __init__(self):
-        self.__vertex_to_edge   = dict()
-        self.__edge_set         = []
-        self.__edge_to_label    = []
+        self.__vertex_to_edge   = dict() # dictionary of sets of edgeNum
+        self.__edge_set         = [] # list of sets. Index is edgeNum and set contains all v in that edge
+        self.__edge_to_label    = [] # list of edges
         self.__label_to_edge    = dict()
-        self.__weights          = []
+        self.__weights          = [] # list of floats
         self.__edge_size        = None
         self.__Z0               = None
         self.__Zt               = None
@@ -28,6 +28,9 @@ class Hypergraph(object):
     def importEdge(self, edgeMap):
         '''
             edgeMap is a dict: vertex -> collection of edge labels
+
+            1. use a build___map.py to create an edgeMap for some feature (set of edges with 1 edge per feature category)
+            2. Use this function to import those edges into the hypergraph
         '''
         self.__weights = list(self.__weights)
         for v in edgeMap:
@@ -80,7 +83,7 @@ class Hypergraph(object):
             pass
 
         retained_edges.sort(reverse=True)
-        
+
         # Backup old data
         old_edge_set        = self.__edge_set
         old_edge_to_label   = self.__edge_to_label
@@ -298,6 +301,7 @@ class Hypergraph(object):
             pass
 
         # Carve into train and validation
+        ## DREW: P should not be list of ints, it should be list of lists or some type of container that supports len
         nVal    = int(numpy.floor(val * len(P)))
         Pval    = P[:nVal]
         Ptrain  = P[nVal:]
@@ -346,7 +350,7 @@ class Hypergraph(object):
             Compute the log-likelihood of a playlist segment
             Output is normalized by length
         '''
-        
+
         x0      = self.__makeVec(plist[0])
         # Update f
         xzw     = x0 * self.__weights / self.__Z0
@@ -356,7 +360,7 @@ class Hypergraph(object):
             x1      = self.__makeVec(next_song)
 
             x0w     = x0 * self.__weights
-            x01zw   = x0w * x1 / self.__Zt 
+            x01zw   = x0w * x1 / self.__Zt
 
             sx01zw  = numpy.sum(x01zw)
             sx0w    = numpy.sum(x0w)
@@ -373,7 +377,7 @@ class Hypergraph(object):
             Compute the stateless log-likelihood of a playlist segment
             Output is normalized by length
         '''
-        
+
         ll = 0
         for x in plist:
             x0      = self.__makeVec(x)
@@ -487,4 +491,3 @@ class Hypergraph(object):
             pass
 
         return (songs, edges)
-
