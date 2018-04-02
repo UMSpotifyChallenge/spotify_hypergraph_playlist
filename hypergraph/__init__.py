@@ -23,11 +23,12 @@ class Hypergraph(object):
         self.__edge_size        = None
         self.__Z0               = None
         self.__Zt               = None
+        self.pub_edges = self.__edge_to_label
         pass
 
     def importEdge(self, edgeMap):
         '''
-            edgeMap is a dict: vertex -> collection of edge labels
+            edgeMap is a dict: vertex -> collection of edge labels?
 
             1. use a build___map.py to create an edgeMap for some feature (set of edges with 1 edge per feature category)
             2. Use this function to import those edges into the hypergraph
@@ -66,6 +67,8 @@ class Hypergraph(object):
         self.__Zt       = numpy.array(self.__edge_size) - 1.0
 
         self.__weights  = numpy.array(self.__weights)
+
+        self.pub_edges = self.__edge_to_label
         pass
 
     def pruneEdges(self, MIN_SIZE=128):
@@ -302,9 +305,9 @@ class Hypergraph(object):
 
         # Carve into train and validation
         ## DREW: P should not be list of ints, it should be list of lists or some type of container that supports len
-        nVal    = int(numpy.floor(val * len(P)))
-        Pval    = P[:nVal]
-        Ptrain  = P[nVal:]
+        nVal    = int(numpy.floor(val * len(P))) # num of songs to validate on
+        Pval    = P[:nVal] # song IDs for valifation
+        Ptrain  = P[nVal:] # song IDs for training
 
         (X0, Xt, Xp)        = plprocess(Ptrain)
 
@@ -329,7 +332,10 @@ class Hypergraph(object):
             self.__weights  = w
             self.__weights  /= numpy.sum(self.__weights)
             if val > 0:
-                score = self.avglikelihood(Pval)
+                ## (DREW DBG for -inf)
+                ## turning off MARKOV gets rid of error
+                #score = self.avglikelihood(Pval)
+                score = self.avglikelihood(Pval, False)
             else:
                 score = self.avglikelihood(Ptrain)
                 pass
@@ -351,13 +357,14 @@ class Hypergraph(object):
             Output is normalized by length
         '''
 
-        x0      = self.__makeVec(plist[0])
+        x0      = self.__makeVec(plist[0]) ## map of edges that this song is part of
         # Update f
         xzw     = x0 * self.__weights / self.__Z0
         sxzw    = numpy.sum(xzw)
         ll      = numpy.log(sxzw) - numpy.log(numpy.sum(self.__weights))
         for next_song in plist[1:]:
-            x1      = self.__makeVec(next_song)
+
+            x1      = self.__makeVec(next_song) ## map of edges that this song is part of
 
             x0w     = x0 * self.__weights
             x01zw   = x0w * x1 / self.__Zt
@@ -365,11 +372,25 @@ class Hypergraph(object):
             sx01zw  = numpy.sum(x01zw)
             sx0w    = numpy.sum(x0w)
 
+            ## potential issue (DREW DBG for -inf):
+            ## not excluding songs with no edges
+            ''' more insight:
+                -inf results when the start node (plist[0]) and the next_node
+                in plist have no edges in common
+            '''
+            if sx01zw == 0.0:
+                print(x0w)
+                print(x1)
+                print(x0w * x1)
+
+
             # Update f
+            print("(DREW DBG for -inf) sx01zw = %s, sx0w = %s" % ( str(sx01zw), str(sx0w) ))
             ll      += numpy.log(sx01zw)   - numpy.log(sx0w)
             pass
 
         ll /= len(plist)
+        print("(DREW DBG for -inf) len(plist) = %i, ll = %s" % ( len(plist), str(ll) ))
         return ll
 
     def loglikelihood_stateless(self, plist):

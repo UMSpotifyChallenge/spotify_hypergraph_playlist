@@ -101,7 +101,7 @@ def getFiles(params, suffix):
     F.sort()
     for f in F:
         with open(os.path.abspath(f), 'r') as infile:
-            P = pickle.load(infile)
+            P = pickle.load(infile) #  P is list where index = list of song_ids in the fold? (train / test data)
             pass
         yield (P, os.path.basename(f).replace('_'+suffix+'.pickle',''))
     pass
@@ -119,13 +119,16 @@ def evaluateModel(params):
     # Reset edge weights
     G.unlearn()
 
+    print(G.getWeights())
+
+    ## P is list where index = list of song_ids in the fold? (train / test data)
     for (P, name) in getFiles(params, 'train'):
         nFolds  = len(P)
         print('Training on %20s... ' % name)
         weights[name]   = [None] * nFolds # add name to weights
 
-        ## a P[fold] here should be at leasat 2 dimensional
-        for fold in xrange(nFolds): # what does a 'fold' represent?
+        ## a P[fold] here should be at least 2 dimensional
+        for fold in xrange(nFolds):
             if params['weighted']:
                 G.learn(P[fold],
                     MARKOV  =   params['markov'],
@@ -139,6 +142,8 @@ def evaluateModel(params):
             scores[name]            = {}
         print(' done.')
         pass
+
+    print(G.getWeights())
 
     for (P, name) in getFiles(params, 'test'):
         #print(P)

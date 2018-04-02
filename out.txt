@@ -1,0 +1,106 @@
+Input directory already exists
+Loading model...
+Training on             playlist... 
+('xt = ', <30622x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14805 stored elements in Compressed Sparse Row format>)
+('xp = ', <30622x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30622 stored elements in Compressed Sparse Row format>)
+('xt = ', <30622x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14805 stored elements in Compressed Sparse Row format>)
+('xp = ', <30622x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30622 stored elements in Compressed Sparse Row format>)
+('xt = ', <27760x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12680 stored elements in Compressed Sparse Row format>)
+('xp = ', <27760x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27760 stored elements in Compressed Sparse Row format>)
+('xt = ', <27760x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12680 stored elements in Compressed Sparse Row format>)
+('xp = ', <27760x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27760 stored elements in Compressed Sparse Row format>)
+('xt = ', <27572x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12533 stored elements in Compressed Sparse Row format>)
+('xp = ', <27572x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27572 stored elements in Compressed Sparse Row format>)
+('xt = ', <27572x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12533 stored elements in Compressed Sparse Row format>)
+('xp = ', <27572x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27572 stored elements in Compressed Sparse Row format>)
+('xt = ', <27888x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12758 stored elements in Compressed Sparse Row format>)
+('xp = ', <27888x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27888 stored elements in Compressed Sparse Row format>)
+('xt = ', <27888x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12758 stored elements in Compressed Sparse Row format>)
+('xp = ', <27888x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27888 stored elements in Compressed Sparse Row format>)
+('xt = ', <30743x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14768 stored elements in Compressed Sparse Row format>)
+('xp = ', <30743x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30743 stored elements in Compressed Sparse Row format>)
+('xt = ', <30743x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14768 stored elements in Compressed Sparse Row format>)
+('xp = ', <30743x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30743 stored elements in Compressed Sparse Row format>)
+('xt = ', <30647x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14884 stored elements in Compressed Sparse Row format>)
+('xp = ', <30647x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30647 stored elements in Compressed Sparse Row format>)
+('xt = ', <30647x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14884 stored elements in Compressed Sparse Row format>)
+('xp = ', <30647x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30647 stored elements in Compressed Sparse Row format>)
+('xt = ', <30621x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14882 stored elements in Compressed Sparse Row format>)
+('xp = ', <30621x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30621 stored elements in Compressed Sparse Row format>)
+('xt = ', <30621x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14882 stored elements in Compressed Sparse Row format>)
+('xp = ', <30621x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30621 stored elements in Compressed Sparse Row format>)
+('xt = ', <30323x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14689 stored elements in Compressed Sparse Row format>)
+('xp = ', <30323x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30323 stored elements in Compressed Sparse Row format>)
+('xt = ', <30323x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14689 stored elements in Compressed Sparse Row format>)
+('xp = ', <30323x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30323 stored elements in Compressed Sparse Row format>)
+('xt = ', <30648x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14788 stored elements in Compressed Sparse Row format>)
+('xp = ', <30648x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30648 stored elements in Compressed Sparse Row format>)
+('xt = ', <30648x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 14788 stored elements in Compressed Sparse Row format>)
+('xp = ', <30648x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 30648 stored elements in Compressed Sparse Row format>)
+('xt = ', <27771x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12759 stored elements in Compressed Sparse Row format>)
+('xp = ', <27771x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27771 stored elements in Compressed Sparse Row format>)
+('xt = ', <27771x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 12759 stored elements in Compressed Sparse Row format>)
+('xp = ', <27771x4 sparse matrix of type '<type 'numpy.float64'>'
+	with 27771 stored elements in Compressed Sparse Row format>)
+ done.
+Testing G(            playlist) on             playlist	
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+avg LL at this fold: 
+-inf
+LL: -inf +- nan
