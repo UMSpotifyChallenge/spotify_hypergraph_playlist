@@ -18,7 +18,7 @@ class Hypergraph(object):
         self.__vertex_to_edge   = dict() # dictionary of sets of edgeNum
         self.__edge_set         = [] # list of sets. Index is edgeNum and set contains all v in that edge
         self.__edge_to_label    = [] # list of edges
-        self.__label_to_edge    = dict()
+        self.__label_to_edge    = dict() # name of edge -> edge number
         self.__weights          = [] # list of floats
         self.__edge_size        = None
         self.__Z0               = None
@@ -28,7 +28,7 @@ class Hypergraph(object):
 
     def importEdge(self, edgeMap):
         '''
-            edgeMap is a dict: vertex -> collection of edge labels?
+            edgemap = dict of songID (vertex) -> list of vertex edges inside this cat
 
             1. use a build___map.py to create an edgeMap for some feature (set of edges with 1 edge per feature category)
             2. Use this function to import those edges into the hypergraph
@@ -190,9 +190,9 @@ class Hypergraph(object):
         Xp          = []
         r           = 0
 
-        for pi in xrange(nPlaylists):
-            for t in xrange(len(P[pi])):
-                for enum in self.__vertex_to_edge[P[pi][t]]:
+        for pi in xrange(nPlaylists): # for each playlist
+            for t in xrange(len(P[pi])): # for each song in the playlist
+                for enum in self.__vertex_to_edge[P[pi][t]]: # for each edge including the song ID
                     X0[r, enum] = 1.0 / self.__Z0[enum]
                     pass
                 r += 1
@@ -205,7 +205,7 @@ class Hypergraph(object):
         '''
             Optimize the edge weights
 
-            P:      list of vertex sequences [ [v1, v2, ... vk], [v1, v2, ... vl], ...]
+            P:      list of vertex sequences [ [v1, v2, ... vk], [v1, v2, ... vl], ...] #drew: vertex = playlist id here
             lam:    rate of the gamma weight prior (default: 1)
                     (lam=0 gives a dirichlet prior)
             a:      shape of the gamma weight prior (default: 1)
@@ -305,9 +305,10 @@ class Hypergraph(object):
 
         # Carve into train and validation
         ## DREW: P should not be list of ints, it should be list of lists or some type of container that supports len
+        # P is list of lists(folds) of playlist ids to train on
         nVal    = int(numpy.floor(val * len(P))) # num of songs to validate on
-        Pval    = P[:nVal] # song IDs for valifation
-        Ptrain  = P[nVal:] # song IDs for training
+        Pval    = P[:nVal] # playlist ids for valifation
+        Ptrain  = P[nVal:] # playlist ids for training
 
         (X0, Xt, Xp)        = plprocess(Ptrain)
 
@@ -335,9 +336,9 @@ class Hypergraph(object):
                 ## (DREW DBG for -inf)
                 ## turning off MARKOV gets rid of error
                 #score = self.avglikelihood(Pval)
-                score = self.avglikelihood(Pval, False)
+                score = self.avglikelihood(Pval, MARKOV)
             else:
-                score = self.avglikelihood(Ptrain)
+                score = self.avglikelihood(Ptrain, MARKOV)
                 pass
             if score > BEST_SCORE:
                 BEST_SCORE      = score

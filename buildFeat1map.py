@@ -32,7 +32,7 @@ def getFeat1Map(feature_file):
         #    continue
         X[song_id] = feat_cat.split(',')
         pass
-    return X
+    return X # map of songID (vertex) -> list of vertex edges inside this cat
 
 
 if __name__ == '__main__':

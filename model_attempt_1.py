@@ -10,7 +10,7 @@ def constructHypergraph(params):
 
 	HG = hypergraph.Hypergraph()
 
-	'''
+
 	## at this point, import all sperate edge sets from different features into this one large hypergraph
 	# for all song -> feature  maps that we have pickled
 	print("edgelist: ");print(HG.pub_edges)
@@ -34,8 +34,8 @@ def constructHypergraph(params):
 		pass
 	# pass
 	print("edgelist: ");print(HG.pub_edges)
-	'''
 
+	'''
 	## use this as worst baseline (all songs in 1 edge)
 	with open("featALLmap.pickle", 'r') as f:
 		print("Adding all songs to 1 edge (anyEdge)...")
@@ -43,6 +43,7 @@ def constructHypergraph(params):
 		pass
 	# pass
 	print("edgelist: ");print(HG.pub_edges)
+	'''
 
 	# TODO: prune edges if edge is less than min edge size
 

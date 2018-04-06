@@ -13,9 +13,9 @@ def getLists(P, ids):
     lists = []
 
     for x in ids: # for each playlist ID
-        #for y in P[x]: # for each song ID? <- This doesnt make sense if we want many lists in lists
-        	#lists.append(y)
-		lists.append(P[x])
+        for y in P[x]: # for each song ID   Drew: this was my previous misinterpretation -> This doesnt make sense if we want many lists in lists
+        	lists.append(y)
+        #lists.append(P[x]) # drew: this is what I was testing on for beginning of week of 4/2 (it's wrong)
     return lists
 
 
@@ -65,83 +65,81 @@ Input: txt file of songs IDs -> list of playlists
 Output: pickle of fold # X playlist ID X songs (1 for train and 1 for test)
 """
 def makeTrainTestData(filename, train_ratio = 0.7, nFolds = 10):
-	# Need to split playlist data into train/test
-	# Using split 70/30
-	# save data as list with index = fold number. Value = map of playlist -> song
+    # Need to split playlist data into train/test
+    # Using split 70/30
+    # save data as list with index = fold number. Value = map of playlist -> song
 
-	cwd = os.getcwd()
-	P = {} # P is map of playlist_id -> list of song_ids
+    cwd = os.getcwd()
+    P = {} # P is map of playlist_id -> list of song_ids
 
-	with open(os.path.join(cwd, filename)) as f:
-		for line in f:
-			song_id, playlists_str = line.split('\t')
-			playlist_list = playlists_str.split(',')
-			for plist in playlist_list:
-				if plist not in P:
-					P[plist] = []
-				P[plist].append(song_id)
+    with open(os.path.join(cwd, filename)) as f:
+    	for line in f:
+    		song_id, playlists_str = line.split('\t')
+    		playlist_list = playlists_str.split(',')
+    		for plist in playlist_list:
+    			if plist not in P: # P = map of all playlists (playlist_id -> list of song_ids)
+    				P[plist] = []
+    			P[plist].append(song_id)
 
-	lists_train = []
-	lists_test = []
+    lists_train = []
+    lists_test = []
 
-	## each fold has its own full set of training and testing data, randomly suffled/split
-	for i in xrange(nFolds): # for each fold
-		#print("allocating fold i out of i", i, nFolds)
-		ids         = P.keys() # playlist IDs?
-		random.shuffle(ids)
+    ## each fold has its own full set of training and testing data, randomly shuffled/split
+    for i in xrange(nFolds): # for each fold
+        #print("allocating fold i out of i", i, nFolds)
+        ids         = P.keys() # playlist IDs
+        random.shuffle(ids)
 
-		n           = len(ids)
-		numtrain    = int(n * train_ratio)
-		#print("n = , numtrain =",n,numtrain)
+        n           = len(ids) # number of unique playlists
+        numtrain    = int(n * train_ratio) # number of playlists to train on
+        #print("n = , numtrain =",n,numtrain)
 
-		lists_train.append(getLists(P, ids[:numtrain]))
-		lists_test.append(getLists(P, ids[numtrain:]))
+        lists_train.append(getLists(P, ids[:numtrain])) # list of lists(a fold) of song ids (AKA list of lists/folds of song IDs in fold)
+        lists_test.append(getLists(P, ids[numtrain:]))  # list of lists(a fold) of song ids (AKA list of lists/folds of song IDs in fold)
 
         pass
 
-	#print(lists_train)
+    #print(lists_train)
 
-	'''
-	with open(os.path.join(cwd, filename)) as f:
-		file_length = sum(1 for _ in f)
-		train_length = int(0.7 * float(file_length))
-		test_length = file_length - train_length
+    '''
+    with open(os.path.join(cwd, filename)) as f:
+    	file_length = sum(1 for _ in f)
+    	train_length = int(0.7 * float(file_length))
+    	test_length = file_length - train_length
 
-	f.close()
+    f.close()
 
-	with open(os.path.join(cwd, filename)) as f:
-		for cnt, line in enumerate(f):
-			line = line.rstrip().rstrip(",")
-			pid, tracks = line.split('\t', 1)
-			track_list = [int(t) for t in tracks.split(",")]
-			if cnt < train_length:
-				playlist_train.append(track_list)
-			else:
-				playlist_test.append(track_list)
+    with open(os.path.join(cwd, filename)) as f:
+    	for cnt, line in enumerate(f):
+    		line = line.rstrip().rstrip(",")
+    		pid, tracks = line.split('\t', 1)
+    		track_list = [int(t) for t in tracks.split(",")]
+    		if cnt < train_length:
+    			playlist_train.append(track_list)
+    		else:
+    			playlist_test.append(track_list)
 
-	f.close()
-	'''
+    f.close()
+    '''
 
-	input_directory = os.path.join(cwd, "playlist_input")
-	if not os.path.exists(input_directory):
-		os.mkdir(input_directory)
-		print("Made Directory")
-	else:
-		print("Input directory already exists")
+    input_directory = os.path.join(cwd, "playlist_input")
+    if not os.path.exists(input_directory):
+    	os.mkdir(input_directory)
+    	print("Made Directory")
+    else:
+    	print("Input directory already exists")
 
-	training_file = os.path.join(input_directory, "playlist_train.pickle")
-	testing_file = os.path.join(input_directory, "playlist_test.pickle")
+    training_file = os.path.join(input_directory, "playlist_train.pickle")
+    testing_file = os.path.join(input_directory, "playlist_test.pickle")
 
-	# Write a pickle containing a list of all the playlists
-	# Model expects input list of lists of vertices representing edges
-	with open(training_file, 'w') as f:
-		pickle.dump(lists_train, f)
-	f.close()
+    # Write a pickle containing a list of all the playlists
+    # Model expects input list of lists of vertices representing edges
+    with open(training_file, 'wb') as f:
+    	pickle.dump(lists_train, f)  # list of lists/folds of song IDs in fold
 
-	# Write a pickle containing a list of all the playlists
-	# Model expects input list of lists of vertices representing edges
-	with open(testing_file, 'w') as f:
-		pickle.dump(lists_test, f)
-	f.close()
+    # Write a pickle containing a list of all the playlists
+    # Model expects input list of lists of vertices representing edges
+    with open(testing_file, 'wb') as f:
+    	pickle.dump(lists_test, f)  # list of lists/folds of song IDs in fold
 
-	return input_directory
+    return input_directory
